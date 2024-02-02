@@ -2,8 +2,9 @@ const db = require("../models");
 const File = db.file;
 
 const uploadFile = async (req, res) => {
-    const file = req.filename;
-    console.log(file)
+    
+    const file = req.file;
+   
     if (!file) {
         return res.status(400).json({
             error: true,
