@@ -23,7 +23,7 @@ db.tutorials = require("./tutorial.js")(sequelize, Sequelize)
 db.roles = require("./role.js")(sequelize,Sequelize)
 db.users = require("./user.js")(sequelize, Sequelize)
 db.otp = require("./otp.js")(sequelize, Sequelize)
-
+db.file = require("./file.js")(sequelize, Sequelize)
 
 
 db.sequelize.sync({ force: false })
