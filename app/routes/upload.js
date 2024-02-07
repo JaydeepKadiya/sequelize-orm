@@ -20,6 +20,10 @@ router.post("/", upload.single("file"), uploadController.uploadFile)
 
 router.post("/multi", upload.array('files', 5),uploadController.uploadMultipleFiles)
 
+router.get('/list', uploadController.imageList)
 
+router.get('/:id', uploadController.imageById)
+
+router.post('/test', upload.single("file"), uploadController.uploadtoS3)
 
 module.exports = router
