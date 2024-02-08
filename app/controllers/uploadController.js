@@ -98,7 +98,7 @@ const uploadtoS3 = async (req, res) => {
   });
 };
 
-const imageList = async (req, res) => {
+const fileList = async (req, res) => {
   try {
     const FindRecord = await File.findAll();
 
@@ -147,7 +147,7 @@ const imageList = async (req, res) => {
   }
 };
 
-const imageById = async (req, res) => {
+const fileById = async (req, res) => {
   try {
     const id = req.params.id;
     const FindRecord = await File.findOne({ where: { id: id } });
@@ -195,6 +195,6 @@ module.exports = {
   uploadFile,
   uploadMultipleFiles,
   uploadtoS3,
-  imageList,
-  imageById,
+  fileList,
+  fileById,
 };
