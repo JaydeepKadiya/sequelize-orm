@@ -15,13 +15,14 @@ const uploadFile = async (req, res) => {
   const { filename, path } = req.file;
   try {
     const fileId = await File.create({ filename, path });
+    logger.info("File uploaded successfully");
     return res.status(200).json({
       error: false,
       message: "File Uploaded Successfully!!!!!!",
       data: fileId,
     });
   } catch (err) {
-    console.error("Error uploading file:", err);
+    logger.error(`Error uploading file: ${err}`);
     res.status(500).json({
       error: true,
       message: "Failed to upload file !!!!!!",
@@ -39,7 +40,7 @@ const uploadMultipleFiles = async (req, res) => {
       const fileId = await File.create({ filename, path });
       insertedFiles.push(fileId);
     } catch (err) {
-      console.error("Error inserting file:", err);
+      logger.error(`Error inserting file: ${err}`);
       res.status(500).json({
         error: true,
         message: "Failed to upload file !!!!!!",
@@ -47,7 +48,7 @@ const uploadMultipleFiles = async (req, res) => {
       return;
     }
   }
-
+  logger.info("Files uploaded successfully");
   res.status(200).json({
     error: false,
     message: "Files Uploaded Successfully!!!!!!",
@@ -59,6 +60,7 @@ const uploadtoS3 = async (req, res) => {
   const file = req.file;
 
   if (!file) {
+    logger.error("No file uploaded.");
     return res.status(400).send("No file uploaded.");
   }
   const filename = file.originalname;
@@ -66,6 +68,7 @@ const uploadtoS3 = async (req, res) => {
   const mimeType = require("mime-types").lookup(file.originalname);
 
   if (!mimeType) {
+    logger.error("Unable to determine MIME type.");
     return res.status(400).send("Unable to determine MIME type.");
   }
 
@@ -85,11 +88,11 @@ const uploadtoS3 = async (req, res) => {
 
   s3.upload(params, async (err, data) => {
     if (err) {
-      console.error(err);
+      logger.error(`Error uploading file to S3: ${err}`);
       return res.status(500).send("Error uploading file to S3.");
     }
     const fileId = await File.create({ filename, path });
-
+    logger.info("File uploaded successfully to S3.");
     res.status(200).send("File uploaded successfully to S3.\n" + fileId);
   });
 };
@@ -99,6 +102,7 @@ const imageList = async (req, res) => {
     const FindRecord = await File.findAll();
 
     if (!FindRecord || FindRecord.length === 0) {
+      logger.error("Record Not Found!!!");
       return res.status(404).json({
         error: true,
         message: "Record Not Found!!!",
@@ -120,14 +124,11 @@ const imageList = async (req, res) => {
       try {
         await fs.unlink(FindRecord[i].path);
       } catch (unlinkError) {
-        console.error("Error unlinking file:", unlinkError);
-        // console.log("File Path:" , FindRecord[i].path);
-
-        // continue; 
+        logger.error(`Error unlinking file: ${unlinkError}`);
       }
       FindRecord[i].path = url;
     }
-
+    logger.info("URLs fetched successfully");
     return res.status(200).json({
       error: false,
       message: "URL Fetched Successfully",
@@ -136,7 +137,7 @@ const imageList = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error generating signed URL:", error);
+    logger.error(`Error generating signed URL: ${error}`);
     return res.status(500).json({
       error: true,
       message: "Internal Server Error",
@@ -146,26 +147,37 @@ const imageList = async (req, res) => {
 };
 
 const imageById = async (req, res) => {
-  const id = req.params.id;
-  const FindRecord = await File.findOne({ where: { id: id } });
-  if (!FindRecord) {
-    return res.status(404).json({
+  try {
+    const id = req.params.id;
+    const FindRecord = await File.findOne({ where: { id: id } });
+    if (!FindRecord) {
+      logger.error("Record Not Found!!!");
+      return res.status(404).json({
+        error: true,
+        message: "Record Not Found!!!",
+        data: [],
+      });
+    }
+    logger.info("Record fetched successfully");
+    return res.status(200).json({
+      error: false,
+      message: "Record Fetched Successfully",
+      data: FindRecord,
+    });
+  } catch (error) {
+    logger.error(`Error fetching record: ${error}`);
+    return res.status(500).json({
       error: true,
-      message: "Record Not Found!!!",
+      message: "Internal Server Error",
       data: [],
     });
   }
-  return res.status(200).json({
-    error: false,
-    message: "Record Fetched Successfully",
-    data: FindRecord,
-  });
-}
+};
 
 module.exports = {
   uploadFile,
   uploadMultipleFiles,
   uploadtoS3,
   imageList,
-  imageById
+  imageById,
 };

@@ -15,6 +15,7 @@ const createTutorial = async (req, res) => {
         const { error } = schema.validate(req.body)
 
         if (error) {
+            logger.error(`Validation error: ${error.details.map(detail => detail.message).join(', ')}`);
             return res.status(400).json({
                 error: true,
                 message: error.details.map((detail) => detail.message),
@@ -28,6 +29,7 @@ const createTutorial = async (req, res) => {
             }
         })
         if (titleAvailable !== null) {
+            logger.error('Title already registered');
             return res.status(400).json({
                 error: true,
                 message: "Title already Registered",
@@ -41,12 +43,14 @@ const createTutorial = async (req, res) => {
             published
         })
         if (!result) {
+            logger.error('Failed to create record');
             return res.status(400).json({
                 error: true,
                 message: "Failed to Create Record!!!",
                 data: []
             })
         }
+        logger.info('Tutorial created successfully');
         return res.status(201).json({
             error: false,
             message: "Tutorial Created Successfully",
@@ -58,6 +62,7 @@ const createTutorial = async (req, res) => {
         })
 
     } catch (err) {
+        logger.error(`Internal server error: ${err}`);
         return res.status(500).json({
             error: true,
             message: "Error!!!! Internal Server Error!!!",
@@ -68,12 +73,14 @@ const createTutorial = async (req, res) => {
 const findAll = async (req, res) => {
     try {
         const result = await Tutorial.findAll()
+        logger.info('Data fetched successfully');
         return res.status(200).json({
             error: false,
             message: "Data Fatched Successfully!!!",
             data: result
         })
     } catch (err) {
+        logger.error(`Internal server error: ${err}`);
         return res.status(500).json({
             error: true,
             message: "Error!!!! Internal Server Error!!!",
@@ -90,18 +97,21 @@ const findOne = async (req, res) => {
             }
         })
         if (!result) {
+            logger.error(`Data with ID ${id} not found or deleted`);
             return res.status(400).json({
                 error: true,
                 message: "Data Not Found Or Deleted",
                 data: []
             })
         }
+        logger.info(`Data with ID ${id} fetched successfully`);
         return res.status(200).json({
             error: false,
             message: "Data Fatched Successfully",
             data: result
         })
     } catch (err) {
+        logger.error(`Internal server error: ${err}`);
         return res.status(500).json({
             error: true,
             message: "Error!!!! Internal Server Error!!!",
@@ -119,6 +129,7 @@ const updateTutorial = async (req, res) => {
         })
         const { error, value } = schema.validate(req.body)
         if (error) {
+            logger.error(`Validation error: ${error.details.map(detail => detail.message).join(', ')}`);
             return res.status(400).json({
                 error: true,
                 message: error.details.map((detail) => detail.message),
@@ -131,12 +142,14 @@ const updateTutorial = async (req, res) => {
         })
         console.log(result)
         if (result == 0) {
+            logger.error(`Tutorial with ID ${id} not found`);
             return res.status(400).json({
                 error: true,
                 message: `Tutorial with the id: ${id} Not Found`,
                 data: []
             })
         }
+        logger.info(`Tutorial with ID ${id} updated successfully`);
         return res.status(200).json({
             error: false,
             message: "Tutorial Updated Successfully!!!!!!!",
@@ -147,6 +160,7 @@ const updateTutorial = async (req, res) => {
             }
         })
     } catch (err) {
+        logger.error(`Internal server error: ${err}`);
         return res.status(500).json({
             error: true,
             message: "Error!!!! Internal Server Error!!!",

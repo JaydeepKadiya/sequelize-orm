@@ -1,4 +1,4 @@
-const logger = require('./logs/logger')
+const logger = require('./logs/logger.js')
 
 
 logger.info('This is an informational message.');

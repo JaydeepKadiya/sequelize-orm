@@ -6,6 +6,11 @@ const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 const dotenv = require('dotenv')
 dotenv.config()
+
+const winston = require("../logs/logger.js")
+
+
+
 const sendMail = require("../validations/sendMail.js");
 
 const login = async (req, res) => {
@@ -18,11 +23,12 @@ const login = async (req, res) => {
     const { error, value } = schema.validate(req.body)
 
     if (error) {
-        return res.status(400).json({
-            error: true,
-            message: error.details.map((detail) => detail.message),
-            data: []
-        })
+       logger.error(`Validation error: ${error.details.map(detail => detail.message).join(', ')}`);
+            return res.status(400).json({
+                error: true,
+                message: error.details.map(detail => detail.message),
+                data: []
+            })
     }
     try {
         const user = await User.findOne({
@@ -32,6 +38,7 @@ const login = async (req, res) => {
         })
 
         if (!user) {
+            logger.error("User not found for email:", email);
             return res.status(404).json({
                 error: true,
                 message: "Email Not Found!!!"
@@ -41,6 +48,7 @@ const login = async (req, res) => {
         const validPassword = await bcrypt.compare(password, user.password)
 
         if (!validPassword) {
+            logger.error("Invalid password for email:", email);
             return res.status(400).json({
                 error: true,
                 message: "Invalid Password!!"
@@ -63,6 +71,7 @@ const login = async (req, res) => {
             payload, exp: Math.floor(Date.now() / 1000) + 2300
         }, process.env.REFRESH_TOKEN_SECRET)
 
+        logger.info("User logged in successfully:", email);
         return res.status(200).json({
             error: false,
             message: "User LoggedIn Successfully",
@@ -73,6 +82,7 @@ const login = async (req, res) => {
             }
         })
     } catch (err) {
+        logger.error("Internal Server Error:", err.message);
         res.status(500).json({
             error: true,
             message: "Error!!!!Internal Server Error!!",
@@ -90,9 +100,10 @@ const forgotPassword = async (req, res) => {
         const { error, value } = schema.validate(req.body)
 
         if (error) {
+            logger.error("Validation Error:", error.details.map((detail) => detail.message));
             return res.status(400).json({
                 error: true,
-                message: error.details.map((detail) => detail.message),
+                message: "Validation Error",
                 data: null
             })
         }
@@ -102,6 +113,7 @@ const forgotPassword = async (req, res) => {
             }
         })
         if (!user) {
+            logger.error("User not found for email:", email);
             return res.status(404).json({
                 error: true,
                 message: "Email Not Found!!"
@@ -111,9 +123,12 @@ const forgotPassword = async (req, res) => {
 
         let content = `Your One Time Password  is : " ${otp} " Do Not Share With Anyone`
 
+        logger.info("Generated OTP for user:", { email: email, otp: otp });
+
         const emailResponse = sendMail(email, content, res)
 
         if (emailResponse.error) {
+            logger.error("Error sending email:", emailResponse.error);
             return res.status(400).json(emailResponse)
         }
         const expireAt = new Date();
@@ -137,6 +152,7 @@ const forgotPassword = async (req, res) => {
                     }
                 })
             } else {
+                logger.error("OTP is already set and different:", { email: email, otp: otp });
                 return res.status(400).json({
                     error: true,
                     message: "OTP is already set and different. Unable to update OTP."
@@ -181,6 +197,7 @@ const forgotPassword = async (req, res) => {
 
         // }
     } catch (err) {
+        logger.error("Internal Server Error:", err.message);
         return res.status(500).json({
             error: true,
             message: "Error!!!!Internal Server Error!!",
@@ -199,9 +216,10 @@ const otpCheck = async (req, res) => {
         const { error } = schema.validate({ otp })
 
         if (error) {
+            logger.error("Validation Error:", error.details.map((detail) => detail.message));
             return res.status(400).json({
                 error: true,
-                message: error.details.map((detail) => detail.message),
+                message: "Validation Error",
                 data: null
             })
         }
@@ -213,6 +231,7 @@ const otpCheck = async (req, res) => {
         })
         console.log(user)
         if (!user) {
+            logger.error("Invalid OTP:", otp);
             return res.status(404).json({
                 error: true,
                 message: "Invalid OTP !! Please Provide Valid one-time-password!!!!"
@@ -228,11 +247,13 @@ const otpCheck = async (req, res) => {
                 }
             })
         }
+        logger.info("OTP Verified Successfully:", otp);
         return res.status(200).json({
             error: false,
             message: "OTP Verified Successfully!!!!!"
         })
     } catch (err) {
+        logger.error("Internal Server Error:", err.message);
         return res.status(500).json({
             error: true,
             message: "Internal Server Error!!!!!",
@@ -254,9 +275,10 @@ const resetPassword = async (req, res) => {
         const { error, value } = schema.validate(req.body)
 
         if (error) {
+            logger.error("Validation Error:", error.details.map((detail) => detail.message));
             return res.status(400).json({
                 error: true,
-                message: error.details.map((detail) => detail.message),
+                message: "Validation Error",
                 data: null
             });
         }
@@ -269,6 +291,7 @@ const resetPassword = async (req, res) => {
         );
 
         if (updatedRowsCount === 0) {
+            logger.error("Unable to reset password. User not found or no changes made.", { email: email });
             return res.status(400).json({
                 error: true,
                 message: "Unable to reset password. User not found or no changes made.",
@@ -276,14 +299,20 @@ const resetPassword = async (req, res) => {
             });
         }
 
+
+        logger.info("Password reset successfully for user:", email);
+
         const updatedUser = await User.findOne({ where: { email: email } });
         updatedUser.password = hashedPassword;
         await updatedUser.save();
+
+        logger.info("Password reset successfully for user:", email);    
         return res.status(200).json({
             error: false,
             message: "Password reset successfully"
         })
     } catch (err) {
+        logger.error("Internal Server Error:", err.message);
         return res.status(500).json({
             error: true,
             message: "Internal Server Error",
