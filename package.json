@@ -30,7 +30,8 @@
     "randomstring": "^1.3.0",
     "sequelize": "^6.33.0",
     "util": "^0.12.5",
-    "winson": "^1.0.0"
+    "winson": "^1.0.0",
+    "winston": "^3.11.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
