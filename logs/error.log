@@ -23,3 +23,6 @@
 {"level":"error","message":"Error unlinking file: TypeError [ERR_INVALID_ARG_TYPE]: The \"cb\" argument must be of type function. Received undefined"}
 {"level":"error","message":"Error unlinking file: TypeError [ERR_INVALID_ARG_TYPE]: The \"cb\" argument must be of type function. Received undefined"}
 {"level":"error","message":"Error unlinking file: TypeError [ERR_INVALID_ARG_TYPE]: The \"cb\" argument must be of type function. Received undefined"}
+{"level":"error","message":"Error unlinking file: Error: ENOENT: no such file or directory, unlink 'D:\\sequelize-orm-main\\uploads\\9310352e149632e91e7a.jpeg'"}
+{"level":"error","message":"Error unlinking file: Error: ENOENT: no such file or directory, unlink 'D:\\sequelize-orm-main\\uploads\\968a1029379149d1c165.pdf'"}
+{"level":"error","message":"Error uploading file to S3: InvalidAccessKeyId: The AWS Access Key Id you provided does not exist in our records."}

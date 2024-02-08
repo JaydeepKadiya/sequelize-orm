@@ -3,8 +3,8 @@ const File = db.file;
 const fs = require("fs");
 const crypto = require("crypto");
 const AWS = require("aws-sdk");
-const bucketName = process.env.AWS_BUCKET_NAME;
 const logger = require("../logs/logger.js");
+const bucketName = process.env.AWS_BUCKET_NAME;
 
 AWS.config.update({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -168,11 +168,12 @@ const fileById = async (req, res) => {
     const s3 = new AWS.S3();
     const url = await s3.getSignedUrlPromise("getObject", params);
 
-    try {
-      await fs.unlink(FindRecord.path);
-    } catch (unlinkError) {
-      logger.error(`Error unlinking file: ${unlinkError}`);
-    }
+      await fs.unlink(FindRecord.path, (unlinkError) => {
+        if (unlinkError) {
+          logger.error(`Error unlinking file: ${unlinkError}`);
+        }
+      });
+  
     FindRecord.path = url;
 
     logger.info("Record fetched successfully");
