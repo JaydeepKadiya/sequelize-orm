@@ -1,18 +1,14 @@
 const db = require("../models");
 const File = db.file;
-const getFileStream = require("../s3.js");
 const fs = require("fs");
-const util = require("util");
-const unlinkFile = util.promisify(fs.unlink);
-const randomString = require("randomstring");
 const crypto = require("crypto");
 const AWS = require("aws-sdk");
-const bucketName = "sequelize-orm-upload";
+const bucketName = process.env.AWS_BUCKET_NAME;
 
 AWS.config.update({
-  accessKeyId: "AKIAYS2NW4IFGRPQA5WN",
-  secretAccessKey: "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",
-  region: "ap-south-1",
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION,
 });
 
 const uploadFile = async (req, res) => {
