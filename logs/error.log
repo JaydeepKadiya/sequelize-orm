@@ -1,0 +1,25 @@
+{"level":"error","message":"Internal Server Error: Cannot read properties of undefined (reading 'findOne')"}
+{"level":"error","message":"Internal Server Error: Cannot read properties of undefined (reading 'findOne')"}
+{"level":"error","message":"Internal Server Error: Cannot read properties of undefined (reading 'find')"}
+{"level":"error","message":"Internal Server Error: Cannot read properties of undefined (reading 'findOne')"}
+{"level":"error","message":"Internal Server Error: Cannot read properties of undefined (reading 'findOne')"}
+{"level":"error","message":"Internal Server Error: Validation error"}
+{"level":"error","message":"User already Registered"}
+{"level":"error","message":"User not found for email:"}
+{"level":"error","message":"Role already registered"}
+{"level":"error","message":"Error unlinking file: TypeError [ERR_INVALID_ARG_TYPE]: The \"cb\" argument must be of type function. Received undefined"}
+{"level":"error","message":"Error unlinking file: TypeError [ERR_INVALID_ARG_TYPE]: The \"cb\" argument must be of type function. Received undefined"}
+{"level":"error","message":"Error unlinking file: TypeError [ERR_INVALID_ARG_TYPE]: The \"cb\" argument must be of type function. Received undefined"}
+{"level":"error","message":"Error unlinking file: TypeError [ERR_INVALID_ARG_TYPE]: The \"cb\" argument must be of type function. Received undefined"}
+{"level":"error","message":"Error unlinking file: TypeError [ERR_INVALID_ARG_TYPE]: The \"cb\" argument must be of type function. Received undefined"}
+{"level":"error","message":"Error unlinking file: ReferenceError: i is not defined"}
+{"level":"error","message":"Error fetching record: ReferenceError: i is not defined"}
+{"level":"error","message":"Error unlinking file: ReferenceError: i is not defined"}
+{"level":"error","message":"Error fetching record: ReferenceError: i is not defined"}
+{"level":"error","message":"Error fetching record: ReferenceError: i is not defined"}
+{"level":"error","message":"Error fetching record: ReferenceError: i is not defined"}
+{"level":"error","message":"Error fetching record: ReferenceError: i is not defined"}
+{"level":"error","message":"Error unlinking file: TypeError [ERR_INVALID_ARG_TYPE]: The \"cb\" argument must be of type function. Received undefined"}
+{"level":"error","message":"Error unlinking file: TypeError [ERR_INVALID_ARG_TYPE]: The \"cb\" argument must be of type function. Received undefined"}
+{"level":"error","message":"Error unlinking file: TypeError [ERR_INVALID_ARG_TYPE]: The \"cb\" argument must be of type function. Received undefined"}
+{"level":"error","message":"Error unlinking file: TypeError [ERR_INVALID_ARG_TYPE]: The \"cb\" argument must be of type function. Received undefined"}

@@ -1,6 +1,8 @@
 const db = require("../models");
 const Role = db.roles;
 const Joi = require("joi");
+const logger = require("../logs/logger.js")
+
 
 const createRole = async (req, res) => {
     try {

@@ -2,7 +2,7 @@ const db = require("../models");
 const User = db.users;
 const Joi = require("joi");
 const bcrypt = require("bcrypt");
-
+const logger = require("../logs/logger.js");
 const createUser = async (req, res) => {
   try {
     const { fname, lname, email, password, gender, address } = req.body;

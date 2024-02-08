@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 const dotenv = require('dotenv')
 dotenv.config()
 
-const winston = require("../logs/logger.js")
+const logger = require("../logs/logger.js")
 
 
 
