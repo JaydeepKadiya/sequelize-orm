@@ -12,6 +12,8 @@ AWS.config.update({
   region: process.env.AWS_REGION,
 });
 
+const s3 = new AWS.S3();
+
 const uploadFile = async (req, res) => {
   const { filename, path } = req.file;
   try {
@@ -80,7 +82,7 @@ const uploadtoS3 = async (req, res) => {
   const path = "uploads/" + randomString + "." + extension;
 
   const fileContent = fs.createReadStream(file.path);
-  const s3 = new AWS.S3();
+  
   const params = {
     Bucket: bucketName,
     Key: path,
