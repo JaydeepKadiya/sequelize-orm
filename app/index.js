@@ -22,17 +22,12 @@ app.use(cors(corsOptions))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-
 // Routes
 app.use('/api/tutorials', Tutorial)
 app.use('/api/role', Role)
 app.use('/api/user', User)
 app.use('/api/auth', auth)
 app.use('/api/upload', upload)
-
-
-
-
 
 app.listen(PORT, () => {
   console.log(`App is running on port http://localhost:${PORT}.`)
